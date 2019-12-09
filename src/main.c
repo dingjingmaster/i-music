@@ -38,16 +38,13 @@ on_activate (GtkApplication *app)
 		window = g_object_new (I_MUSIC_TYPE_WINDOW,
 		                       "application", app,
 		                       "default-width", 600,
-		                       "default-height", 300,
-		                       NULL);
+		                       "default-height", 300, NULL);
 
 	/* Ask the window manager/compositor to present the window. */
 	gtk_window_present (window);
 }
 
-int
-main (int   argc,
-      char *argv[])
+int main (int argc, char *argv[])
 {
 	g_autoptr(GtkApplication) app = NULL;
 	int ret;
