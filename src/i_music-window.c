@@ -30,8 +30,7 @@ struct _IMusicWindow
 
 G_DEFINE_TYPE (IMusicWindow, i_music_window, GTK_TYPE_APPLICATION_WINDOW)
 
-static void
-i_music_window_class_init (IMusicWindowClass *klass)
+static void i_music_window_class_init (IMusicWindowClass *klass)
 {
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
