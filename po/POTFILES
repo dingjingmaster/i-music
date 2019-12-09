@@ -1,0 +1,7 @@
+data/org.dingjingmaster.music.desktop.in
+data/org.dingjingmaster.music.appdata.xml.in
+data/org.dingjingmaster.music.gschema.xml
+src/i_music-window.ui
+src/main.c
+src/i_music-window.c
+
