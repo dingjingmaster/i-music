@@ -25,7 +25,8 @@ struct _IMusicMain
 
     GtkWidget* main_box;
     GtkWidget* main_box_header;
-    GtkWidget* main_box_header_back;
+    //GtkWidget* main_box_header_back;
+    //GtkWidget* main_box_header_title;
 };
 
 /* 宏 */
@@ -44,7 +45,6 @@ static GtkWidget* main_header_back_activity = NULL;
 static void test_quit (GtkWidget* widget, gpointer data)
 {
     gtk_widget_destroy (GTK_WIDGET (data));
-
 }
 
 /* 公共函数 */
@@ -52,38 +52,41 @@ static void load_picture (GtkWidget* img, const char* path, int width, int heigh
 
 static void init_main_header (GtkWidget* widget)
 {
-    IMusicMain* mm = IMUSIC_MAIN (widget);
-
+    IMusicMain* mm = NULL;
+    GtkWidget* overlay = NULL;
     GtkWidget* header_hbox = NULL;
 
-    // 加载图片
-    //load_picture (&(mm->main_header_back_normal), "/org/dingjingmaster/music/pic/back_normal.svg",
-    //              I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    GtkWidget* main_box_header_back = NULL;
+    GtkWidget* main_box_header_title = NULL;
 
-    gtk_window_set_decorated (GTK_WINDOW(mm), FALSE);
+    mm = IMUSIC_MAIN (widget);
+    main_box_header_back = gtk_event_box_new ();
 
     header_hbox = mm->main_box_header;
+    gtk_window_set_decorated (GTK_WINDOW(mm), FALSE);
 
-    // 后退按钮
-    gtk_widget_set_size_request (mm->main_box_header_back, I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
-    g_signal_connect (G_OBJECT(mm->main_box_header_back), "enter-notify-event", G_CALLBACK(main_back_enter_event), NULL);
-    g_signal_connect (G_OBJECT(mm->main_box_header_back), "leave-notify-event", G_CALLBACK(main_back_leave_event), NULL);
+    // 返回键
+    overlay = gtk_overlay_new ();
+    load_picture (main_header_back_normal, "/org/dingjingmaster/music/pic/back_normal.png",
+                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    load_picture (main_header_back_activity, "/org/dingjingmaster/music/pic/back_activity.png",
+                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    gtk_container_add(GTK_CONTAINER (overlay), main_header_back_normal);
+    gtk_overlay_add_overlay (GTK_OVERLAY (overlay), main_header_back_activity);
+    gtk_container_add (GTK_CONTAINER (main_box_header_back), overlay);
+    gtk_widget_hide (main_header_back_activity);
+    gtk_widget_show (main_header_back_normal);
+    gtk_widget_set_size_request (main_box_header_back, I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    g_signal_connect (G_OBJECT(main_box_header_back), "enter-notify-event", G_CALLBACK(main_back_enter_event), NULL);
+    g_signal_connect (G_OBJECT(main_box_header_back), "leave-notify-event", G_CALLBACK(main_back_leave_event), NULL);
 
-    //g_signal_connect (G_OBJECT(header_back), "button-press-event", G_CALLBACK(test_quit), NULL);
+    // 标题
+    main_box_header_title = gtk_label_new ("I-Music");
 
-    //gtk_widget_set_name (header_close, "event box");
+    // 最小化、关闭按钮
 
-    //gtk_box_pack_start (GTK_BOX (header_left), mm->main_box_header_back, FALSE, FALSE, 0);
-
-    //gtk_box_pack_end (GTK_BOX (header_right), header_close, FALSE, FALSE, 0);
-
-    //gtk_box_pack_start (GTK_BOX (header_hbox), header_left, FALSE, FALSE, 0);
-    //gtk_box_pack_start (GTK_BOX (header_hbox), header_middle, FALSE, FALSE, 0);
-    //gtk_box_pack_start (GTK_BOX (header_hbox), header_right, FALSE, FALSE, 0);
-
-
-    //gtk_widget_set_size_request (header_hbox, 0, I_MUSIC_HEADERBAR_HEIGHT);
-
+    gtk_box_pack_start (GTK_BOX(header_hbox), main_box_header_back, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX(header_hbox), main_box_header_title, TRUE, TRUE, 0);
     gtk_widget_show_all (header_hbox);
 }
 
@@ -95,13 +98,10 @@ static void i_music_main_class_init (IMusicMainClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/dingjingmaster/music/ui/i_music_main.ui");
     gtk_widget_class_bind_template_child (widget_class, IMusicMain, main_box);
     gtk_widget_class_bind_template_child (widget_class, IMusicMain, main_box_header);
-    gtk_widget_class_bind_template_child (widget_class, IMusicMain, main_box_header_back);
 }
 
 static void i_music_main_init (IMusicMain *self)
 {
-    GtkWidget* overlay = NULL;
-
     // 初始化变量
     main_header_back_normal = gtk_image_new();
     main_header_back_activity = gtk_image_new();
@@ -111,19 +111,6 @@ static void i_music_main_init (IMusicMain *self)
 
     // 设置窗口大小限制
     gtk_widget_set_size_request (GTK_WIDGET (self), I_MUSIC_MAIN_WIDTH, I_MUSIC_MAIN_HEIGHT);
-
-    // 返回键
-    overlay = gtk_overlay_new ();
-    load_picture (main_header_back_normal, "/org/dingjingmaster/music/pic/back_normal.png",
-                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
-    load_picture (main_header_back_activity, "/org/dingjingmaster/music/pic/back_activity.png",
-                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
-    gtk_container_add(GTK_CONTAINER (overlay), main_header_back_normal);
-    gtk_overlay_add_overlay (GTK_OVERLAY (overlay), main_header_back_activity);
-    gtk_container_add (GTK_CONTAINER (self->main_box_header_back), overlay);
-
-    gtk_widget_hide (main_header_back_activity);
-    gtk_widget_show (main_header_back_normal);
 
     // 初始化主窗口头
     init_main_header (GTK_WIDGET(self));
