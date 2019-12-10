@@ -25,8 +25,6 @@ struct _IMusicMain
 
     GtkWidget* main_box;
     GtkWidget* main_box_header;
-    //GtkWidget* main_box_header_back;
-    //GtkWidget* main_box_header_title;
 };
 
 /* 宏 */
@@ -37,10 +35,15 @@ G_DEFINE_TYPE (IMusicMain, i_music_main, GTK_TYPE_APPLICATION_WINDOW)
 /* 事件回调 */
 static gboolean main_back_enter_event (GtkWidget* widget, GdkEventExpose* event, gpointer data);
 static gboolean main_back_leave_event (GtkWidget* widget, GdkEventExpose* event, gpointer data);
+static gboolean main_min_enter_event (GtkWidget* widget, GdkEventExpose* event, gpointer data);
+static gboolean main_min_leave_event (GtkWidget* widget, GdkEventExpose* event, gpointer data);
 
 /* 全局常量 */
 static GtkWidget* main_header_back_normal = NULL;
 static GtkWidget* main_header_back_activity = NULL;
+static GtkWidget* main_header_circ = NULL;
+static GtkWidget* main_header_min_normal = NULL;
+static GtkWidget* main_header_min_activity = NULL;
 
 static void test_quit (GtkWidget* widget, gpointer data)
 {
@@ -58,6 +61,17 @@ static void init_main_header (GtkWidget* widget)
 
     GtkWidget* main_box_header_back = NULL;
     GtkWidget* main_box_header_title = NULL;
+    GtkWidget* main_box_header_button_box = NULL;
+
+    GtkWidget* main_box_header_button_box_min = NULL;
+    GtkWidget* main_box_header_button_box_close = NULL;
+
+    // 初始化变量
+    main_header_back_normal = gtk_image_new();
+    main_header_back_activity = gtk_image_new();
+    main_header_circ = gtk_image_new();
+    main_header_min_normal = gtk_image_new();
+    main_header_min_activity = gtk_image_new();
 
     mm = IMUSIC_MAIN (widget);
     main_box_header_back = gtk_event_box_new ();
@@ -84,9 +98,30 @@ static void init_main_header (GtkWidget* widget)
     main_box_header_title = gtk_label_new ("I-Music");
 
     // 最小化、关闭按钮
+    overlay = gtk_overlay_new ();
+    main_box_header_button_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    main_box_header_button_box_min = gtk_overlay_new ();
+    load_picture (main_header_circ, "/org/dingjingmaster/music/pic/pic/button_circ.png",
+                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    load_picture (main_header_min_normal, "/org/dingjingmaster/music/pic/pic/min-normal.png",
+                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    load_picture (main_header_min_activity, "/org/dingjingmaster/music/pic/min_activity.png",
+                  I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    gtk_container_add(GTK_CONTAINER (overlay), main_header_circ);
+    gtk_overlay_add_overlay (GTK_OVERLAY (overlay), main_header_min_normal);
+    gtk_overlay_add_overlay (GTK_OVERLAY (overlay), main_header_min_activity);
+    gtk_container_add (GTK_CONTAINER (main_box_header_button_box_min), overlay);
+    gtk_widget_hide (main_header_min_activity);
+    gtk_widget_show (main_header_min_normal);
+    gtk_widget_set_size_request (main_box_header_button_box_min, I_MUSIC_HEADER_BACK_SIZE, I_MUSIC_HEADER_BACK_SIZE);
+    g_signal_connect (G_OBJECT(main_box_header_button_box_min), "enter-notify-event", G_CALLBACK(main_min_enter_event), NULL);
+    g_signal_connect (G_OBJECT(main_box_header_button_box_min), "leave-notify-event", G_CALLBACK(main_min_leave_event), NULL);
+
+    gtk_box_pack_start (GTK_BOX(main_box_header_button_box), main_box_header_button_box_min, FALSE, FALSE, 0);
 
     gtk_box_pack_start (GTK_BOX(header_hbox), main_box_header_back, FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX(header_hbox), main_box_header_title, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX(header_hbox), main_box_header_button_box, TRUE, TRUE, 0);
     gtk_widget_show_all (header_hbox);
 }
 
@@ -102,10 +137,6 @@ static void i_music_main_class_init (IMusicMainClass *klass)
 
 static void i_music_main_init (IMusicMain *self)
 {
-    // 初始化变量
-    main_header_back_normal = gtk_image_new();
-    main_header_back_activity = gtk_image_new();
-
     // 初始化ui资源中的所有子控件
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -127,6 +158,20 @@ static gboolean main_back_leave_event (GtkWidget* widget, GdkEventExpose* event,
 {
     gtk_widget_show (main_header_back_normal);
     gtk_widget_hide (main_header_back_activity);
+    return TRUE;
+}
+
+static gboolean main_min_enter_event (GtkWidget* widget, GdkEventExpose* event, gpointer data)
+{
+    gtk_widget_show (main_header_min_activity);
+    gtk_widget_hide (main_header_min_normal);
+    return TRUE;
+}
+
+static gboolean main_min_leave_event (GtkWidget* widget, GdkEventExpose* event, gpointer data)
+{
+    gtk_widget_show (main_header_min_normal);
+    gtk_widget_hide (main_header_min_activity);
     return TRUE;
 }
 

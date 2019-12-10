@@ -5,5 +5,7 @@
     <file>pic/back_normal.png</file>
     <file>pic/back_activity.png</file>
     <file>pic/button_circ.png</file>
+    <file>pic/min-normal.png</file>
+    <file>pic/min-activity.png</file>
   </gresource>
 </gresources>
