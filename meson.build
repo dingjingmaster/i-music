@@ -13,7 +13,7 @@ config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
 config_h.set_quoted('GETTEXT_PACKAGE', 'i-music')
 config_h.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 configure_file(
-  output: 'i_music-config.h',
+  output: 'i_music_config.h',
   configuration: config_h,
 )
 add_project_arguments([

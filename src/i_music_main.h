@@ -1,4 +1,4 @@
-/* i_music-window.h
+/* i_music-main.h
  *
  * Copyright 2019 dingjingmaster
  *
@@ -19,11 +19,15 @@
 #pragma once
 
 #include <gtk/gtk.h>
+#include "i_music_param.h"
 
 G_BEGIN_DECLS
 
-#define I_MUSIC_TYPE_WINDOW (i_music_window_get_type())
+#define I_MUSIC_TYPE_MAIN (i_music_main_get_type())
 
-G_DECLARE_FINAL_TYPE (IMusicWindow, i_music_window, I_MUSIC, WINDOW, GtkApplicationWindow)
+/* 不可被继承的类型用 G_DECLARE_FINAL_TYPE 声明，要在 .c 中定义结构体
+ * 传入参数分别是：定义的类、标签、
+ */
+G_DECLARE_FINAL_TYPE (IMusicMain, i_music_main, I_MUSIC, WINDOW, GtkApplicationWindow)
 
 G_END_DECLS

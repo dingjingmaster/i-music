@@ -1,6 +1,6 @@
 i_music_sources = [
   'main.c',
-  'i_music-window.c',
+  'i_music_main.c',
 ]
 
 i_music_deps = [
@@ -10,7 +10,7 @@ i_music_deps = [
 
 gnome = import('gnome')
 
-i_music_sources += gnome.compile_resources('i_music-resources',
+i_music_sources += gnome.compile_resources('i_music_resources',
   'i_music.gresource.xml',
   c_name: 'i_music'
 )

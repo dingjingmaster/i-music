@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/dingjingmaster/music">
-    <file>ui/i-music-main.ui</file>
+    <file>ui/i_music_main.ui</file>
+    <file>pic/back_normal.png</file>
+    <file>pic/back_activity.png</file>
+    <file>pic/button_circ.png</file>
   </gresource>
 </gresources>
